@@ -230,6 +230,10 @@ def recommend_books(user_id: int, combined_features: np.ndarray, interaction_mat
     return recommended_book_ids
 
 
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+
 def predict_rating_batch(user_ids: List[int], book_ids: List[int],
                          interaction_matrix: csr_matrix,
                          user_id_map: Dict[int, int], book_id_map: Dict[int, int],
@@ -266,7 +270,8 @@ def predict_rating_batch(user_ids: List[int], book_ids: List[int],
             else:
                 if predicted_rating < 1 or predicted_rating > 5:
                     # predicted_ratings[i] = random.uniform(mean_rating, upper_bound)
-                    predicted_ratings[i] = min(max(predicted_rating, 1), 5)
+                    # predicted_ratings[i] = min(max(predicted_rating, 1), 5)
+                    predicted_ratings[i] = 1 + 4 * sigmoid(predicted_rating)
                 else:
                     predicted_ratings[i] = predicted_rating
 
